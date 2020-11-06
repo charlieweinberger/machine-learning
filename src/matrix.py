@@ -1,4 +1,4 @@
-# copy, add, subtract, scalar_multiply, matrix_multiply, transpose, is_equal, row_reduct, get_pivot_row, swap_rows, normalize_row, first_nonzero_entry_index, clear_below, clear_above, rref, augment, get_rows, get_cols, inverse, make_int, determinant, cofactor_method_determinant, exponent
+# copy, add, subtract, scalar_multiply, matrix_multiply, transpose, is_equal, row_reduct, get_pivot_row, swap_rows, normalize_row, first_nonzero_entry_index, clear_below, clear_above, rref, augment, get_rows, get_cols, inverse, make_int, determinant, cofactor_method_determinant, exponent, overloads (matrix addition, matrix subtraction, scalar multiplication, matrix multiplication, equality, scalar multiplication w/ the scalar on the left, and exponents for matrices)
 
 class Matrix():
     def __init__(self, elements):
@@ -18,9 +18,6 @@ class Matrix():
                 ans[row_index].append(self.elements[row_index][col_index] + matrix_to_add.elements[row_index][col_index]) 
 
         return Matrix(ans)
-    
-    def __add__(self, matrix_to_add):
-        return self.add(matrix_to_add)
 
     def subtract(self, matrix_to_subtract):
         ans = []
@@ -31,9 +28,6 @@ class Matrix():
                 ans[row_index].append(self.elements[row_index][col_index] - matrix_to_subtract.elements[row_index][col_index]) 
 
         return Matrix(ans)
-    
-    def __sub__(self, matrix_to_subtract):
-        return self.subtract(matrix_to_subtract)
 
     def scalar_multiply(self, scalar):
         ans = []
@@ -44,10 +38,7 @@ class Matrix():
                 ans[row_index].append(round(scalar * self.elements[row_index][col_index], 4)) 
 
         return Matrix(ans)
-    
-    def __mul__(self, scalar):
-        return self.scalar_multiply(scalar)
-    
+
     def matrix_multiply(self, matrix_to_multiply):
         ans = []
 
@@ -65,9 +56,6 @@ class Matrix():
                 ans[num].append(dot_product)
 
         return Matrix(ans)
-
-    def __matmul__(self, matrix_to_multiply):
-        return self.matrix_multiply(matrix_to_multiply)
     
     def transpose(self):
         return Matrix([[self.elements[row_index][col_index] for row_index in range(self.num_rows)] for col_index in range(self.num_cols)])
@@ -302,3 +290,21 @@ class Matrix():
     def exponent(self, num):
         c = self.copy()
         return c.matrix_multiply(c).matrix_multiply(c)
+    
+    def __add__(self, matrix_to_add):
+        return self.add(matrix_to_add)
+
+    def __sub__(self, matrix_to_subtract):
+        return self.subtract(matrix_to_subtract)
+
+    def __mul__(self, scalar):
+        return self.scalar_multiply(scalar)
+    
+    def __rmul__(self, scalar):
+        return self.scalar_multiply(scalar)
+
+    def __matmul__(self, matrix_to_multiply):
+        return self.matrix_multiply(matrix_to_multiply)
+
+    def __pow__(self, num):
+        return self.exponent(num)
