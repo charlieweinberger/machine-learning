@@ -43,3 +43,16 @@ class DataFrame():
             dict_ans[key] = [value[index] for index in range(len(value)) if index in row_indices]
 
         return DataFrame(dict_ans, list(dict_ans.keys()))
+    
+    def apply(self, name, f):
+        c = self.copy()
+
+        row = []
+        for key, value in c.data_dict.items():
+            if key == name:
+                row = value
+        
+        row = [f(n) for n in row]
+        c.data_dict[name] = row
+
+        return c

@@ -2,7 +2,7 @@ import sys
 sys.path.append('src')
 from dataframe import DataFrame
 
-print("Testing Assignment 25-2")
+print("Testing Assignment 28-2")
 
 data_dict = {
     'Pete': [1, 0, 1, 0],
@@ -45,4 +45,20 @@ assert df3.to_array() == [
                            [0, 2, 0]
                          ], df3.to_array()
 
-print("Passed Assignment 25-2")
+data_dict = {
+  'Pete': [1, 0, 1, 0],
+  'John': [2, 1, 0, 2],
+  'Sarah': [3, 1, 4, 0]
+}
+
+df1 = DataFrame(data_dict, column_order = ['Pete', 'John', 'Sarah'])
+df2 = df1.apply('John', lambda x: 7 * x)
+
+ans = {
+        'Pete': [1, 0, 1, 0],
+        'John': [14, 7, 0, 14],
+        'Sarah': [3, 1, 4, 0]
+      }
+assert df2.data_dict == ans, df2.data_dict
+
+print("Passed Assignment 28-2")
