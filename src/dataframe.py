@@ -56,3 +56,55 @@ class DataFrame():
         c.data_dict[name] = row
 
         return c
+    
+    @classmethod
+    def from_array(self, arr, column_order):
+        
+        dict_ans = {}
+        for thing in column_order:
+            dict_ans[thing] = []
+
+        index = 0
+        for key, value in dict_ans.items():
+            for person in arr:
+                value.append(person[index])
+            index += 1  
+
+        return DataFrame(dict_ans, column_order)
+
+    def convert_row_from_array_to_dict(self, arr):
+        c = self.copy()
+
+        dict_ans = {c.columns[elem_index]:arr[elem_index] for elem_index in range(len(arr))}
+
+        return dict_ans
+
+    def select_rows_where(self, f):
+        c = self.copy()
+
+        dict_ans = {c.columns[index]:[] for index in range(len(c.columns))}
+
+        people_dict_list = [c.convert_row_from_array_to_dict(person) for person in c.to_array()]
+        
+        for person_dict in people_dict_list:
+            if f(person_dict):
+                for key, value in person_dict.items():
+                    dict_ans[key].append(value)
+        
+        return DataFrame(dict_ans, c.columns)
+    
+    def order_by(self, this_key, ascending):
+        c = self.copy()
+
+        people_dict_list = [c.convert_row_from_array_to_dict(person) for person in c.to_array()]
+        people_dict_list.sort(reverse = not ascending, key = lambda row: row[this_key])
+
+        values = [list(person_dict.values()) for person_dict in people_dict_list]
+
+        dict_ans = {c.columns[index]:[] for index in range(len(c.columns))}
+
+        for key_index in range(len(c.columns)):
+            for person_list in values:
+                dict_ans[c.columns[key_index]].append(person_list[key_index])
+
+        return DataFrame(dict_ans, c.columns)
