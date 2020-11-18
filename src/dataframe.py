@@ -4,8 +4,8 @@ class DataFrame():
         self.data_dict = data_dict
         self.columns = column_order
 
-        self.column_keys = list(data_dict.keys())
-        self.column_values = list(data_dict.values())
+        self.column_keys = list(self.data_dict.keys())
+        self.column_values = list(self.data_dict.values())
 
         self.num_rows = len(self.column_values)
         self.num_cols = len(self.column_values[0])
@@ -58,10 +58,10 @@ class DataFrame():
         return c
     
     @classmethod
-    def from_array(self, arr, column_order):
+    def from_array(self, arr, columns):
         
         dict_ans = {}
-        for thing in column_order:
+        for thing in columns:
             dict_ans[thing] = []
 
         index = 0
@@ -70,7 +70,7 @@ class DataFrame():
                 value.append(person[index])
             index += 1  
 
-        return DataFrame(dict_ans, column_order)
+        return DataFrame(dict_ans, columns)
 
     def convert_row_from_array_to_dict(self, arr):
         c = self.copy()

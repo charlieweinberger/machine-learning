@@ -10,55 +10,61 @@ class Matrix():
         return Matrix([[entry for entry in row] for row in self.elements])
 
     def add(self, matrix_to_add):
+        c = self.copy()
         ans = []
         
-        for row_index in range(self.num_rows):
+        for row_index in range(c.num_rows):
             ans.append([])
-            for col_index in range(self.num_cols):
-                ans[row_index].append(self.elements[row_index][col_index] + matrix_to_add.elements[row_index][col_index]) 
+            for col_index in range(c.num_cols):
+                ans[row_index].append(c.elements[row_index][col_index] + matrix_to_add.elements[row_index][col_index]) 
 
         return Matrix(ans)
 
     def subtract(self, matrix_to_subtract):
+        c = self.copy()
         ans = []
         
-        for row_index in range(self.num_rows):
+        for row_index in range(c.num_rows):
             ans.append([])
-            for col_index in range(self.num_cols):
-                ans[row_index].append(self.elements[row_index][col_index] - matrix_to_subtract.elements[row_index][col_index]) 
+            for col_index in range(c.num_cols):
+                ans[row_index].append(c.elements[row_index][col_index] - matrix_to_subtract.elements[row_index][col_index]) 
 
         return Matrix(ans)
 
     def scalar_multiply(self, scalar):
+        c = self.copy()
         ans = []
         
-        for row_index in range(self.num_rows):
+        for row_index in range(c.num_rows):
             ans.append([])
-            for col_index in range(self.num_cols):
-                ans[row_index].append(round(scalar * self.elements[row_index][col_index], 4)) 
+            for col_index in range(c.num_cols):
+                ans[row_index].append(round(scalar * c.elements[row_index][col_index], 4)) 
 
         return Matrix(ans)
 
     def matrix_multiply(self, matrix_to_multiply):
+        c = self.copy()
+        c2 = matrix_to_multiply.copy()
         ans = []
 
-        for num in range(self.num_rows):
+        for num in range(c.num_rows):
             ans.append([])
-            for num2 in range(self.num_rows):
+            for num2 in range(c2.num_cols):
                 
-                row = self.elements[num]
-                horizontal_col = [thing[num2] for thing in matrix_to_multiply.elements]
+                row = c.elements[num]
+                horizontal_col = [thing[num2] for thing in c2.elements]
 
                 dot_product = 0
-                for index in range(self.num_cols):
-                        dot_product += row[index] * horizontal_col[index]
+                for index in range(c.num_cols):
+                    dot_product += row[index] * horizontal_col[index]
               
                 ans[num].append(dot_product)
 
         return Matrix(ans)
     
     def transpose(self):
-        return Matrix([[self.elements[row_index][col_index] for row_index in range(self.num_rows)] for col_index in range(self.num_cols)])
+        c = self.copy()
+        return Matrix([[c.elements[row_index][col_index] for row_index in range(c.num_rows)] for col_index in range(c.num_cols)])
 
     def is_equal(self, matrix_to_compare):
         ans = True
@@ -67,9 +73,6 @@ class Matrix():
                 if self.elements[row_index][col_index] != matrix_to_compare.elements[row_index][col_index]:
                     ans = False
         return ans
-
-    def __eq__(self, matrix_to_compare):
-        return self.is_equal(matrix_to_compare)
     
     def row_reduct(self, row1, row2, col_index): # makes row2[col_index] == 0
         multiplier = row2[col_index] / row1[col_index]
@@ -284,8 +287,8 @@ class Matrix():
         else:
             ans = 0
             for col_index in range(c.num_cols):
-                ans += (-1) ** (col_index % 2 + 2) * c.elements[0][col_index] * self.big_to_small_matrix(0, col_index).cofactor_method_determinant()
-            return ans
+                ans += (-1 ** col_index) * c.elements[0][col_index] * c.big_to_small_matrix(0, col_index).cofactor_method_determinant()
+            return ans1
     
     def exponent(self, num):
         c = self.copy()
@@ -306,5 +309,8 @@ class Matrix():
     def __matmul__(self, matrix_to_multiply):
         return self.matrix_multiply(matrix_to_multiply)
 
+    def __eq__(self, matrix_to_compare):
+        return self.is_equal(matrix_to_compare)
+    
     def __pow__(self, num):
         return self.exponent(num)
