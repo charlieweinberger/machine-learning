@@ -288,11 +288,13 @@ class Matrix():
             ans = 0
             for col_index in range(c.num_cols):
                 ans += (-1 ** col_index) * c.elements[0][col_index] * c.big_to_small_matrix(0, col_index).cofactor_method_determinant()
-            return ans1
+            return ans
     
     def exponent(self, num):
         c = self.copy()
-        return c.matrix_multiply(c).matrix_multiply(c)
+        for i in range(num - 1):
+            c = c.matrix_multiply(c)
+        return c
     
     def __add__(self, matrix_to_add):
         return self.add(matrix_to_add)
