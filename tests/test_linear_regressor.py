@@ -5,17 +5,26 @@ from dataframe import DataFrame
 from linear_regressor import LinearRegressor
 
 df = DataFrame.from_array(
-    [[1,0.2],
-     [2,0.25],
-     [3,0.5]],
-    columns = ['hours worked', 'progress']
+    [[0, 0, 0.1],
+     [1, 0, 0.2],
+     [0, 2, 0.5],
+     [4, 5, 0.6]],
+    columns = ['scoops of chocolate', 'scoops of vanilla', 'taste rating']
 )
 
-print(df.data_dict)
+regressor = LinearRegressor(df, dependent_variable = 'taste rating')
 
-regressor = LinearRegressor(df, dependent_variable = 'progress')
+ans = {
+          'constant': 0.19252336,
+          'scoops of chocolate': -0.05981308,
+          'scoops of vanilla': 0.13271028
+      }
+assert {key:round(value, 8) for (key, value) in regressor.coefficients.items()} == ans, {key:round(value, 8) for (key, value) in regressor.coefficients.items()} # these coefficients are rounded, you should only round in your assert statement
 
-assert regressor.coefficients == [0.01667, 0.15], regressor.coefficients
-assert regressor.predict({'hours worked': 4}) == 0.61667, regressor.predict({'hours worked': 4})
+dict_problem = {
+                    'scoops of chocolate': 2,
+                    'scoops of vanilla': 3
+               }
+assert round(regressor.predict(dict_problem), 8) == 0.47102804, round(regressor.predict(dict_problem), 8)
 
 print("passed all")
