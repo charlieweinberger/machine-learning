@@ -10,9 +10,9 @@ class GradientDescent():
         partials = []
         for i in range(self.num_vars):
 
-            point_plus = [(self.point[elem_index] + 0.5 * delta) if elem_index == i else self.point[elem_index] for elem_index in range(len(self.point))]
+            point_plus  = [(self.point[elem_index] + 0.5 * delta) if elem_index == i else self.point[elem_index] for elem_index in range(len(self.point))]
             point_minus = [(self.point[elem_index] - 0.5 * delta) if elem_index == i else self.point[elem_index] for elem_index in range(len(self.point))]
-
+            
             partial = (self.f(*point_plus) - self.f(*point_minus)) / delta
             partials.append(partial)
             
@@ -22,4 +22,4 @@ class GradientDescent():
 
         for a in range(num_steps):
             for i in range(self.num_vars):
-                self.point[i] = self.point[i] - alpha * self.compute_gradient(delta)[i]
+                self.point[i] -= alpha * self.compute_gradient(delta)[i]
