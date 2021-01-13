@@ -12,7 +12,6 @@ class DataFrame():
     
     def copy(self):
         return DataFrame(self.data_dict, self.columns)
-
     def to_array(self):
         c = self.copy()
 
@@ -23,7 +22,6 @@ class DataFrame():
                 ans[m][n] = c.column_values[n][m]
         
         return ans
-    
     def select_columns(self, name_list):
         c = self.copy()
 
@@ -34,7 +32,6 @@ class DataFrame():
                     dict_ans[name] = value
 
         return DataFrame(dict_ans, list(dict_ans.keys()))
-
     def select_rows(self, row_indices):
         c = self.copy()
 
@@ -43,7 +40,6 @@ class DataFrame():
             dict_ans[key] = [value[index] for index in range(len(value)) if index in row_indices]
 
         return DataFrame(dict_ans, list(dict_ans.keys()))
-    
     def apply(self, name, f):
         c = self.copy()
 
@@ -57,28 +53,12 @@ class DataFrame():
 
         return c
     
-    @classmethod
-    def from_array(self, arr, columns):
-        
-        dict_ans = {}
-        for thing in columns:
-            dict_ans[thing] = []
-
-        index = 0
-        for key, value in dict_ans.items():
-            for person in arr:
-                value.append(person[index])
-            index += 1  
-
-        return DataFrame(dict_ans, columns)
-
     def convert_row_from_array_to_dict(self, arr):
         c = self.copy()
 
         dict_ans = {c.columns[elem_index]:arr[elem_index] for elem_index in range(len(arr))}
 
         return dict_ans
-
     def select_rows_where(self, f):
         c = self.copy()
 
@@ -91,7 +71,7 @@ class DataFrame():
                 for key, value in person_dict.items():
                     dict_ans[key].append(value)
         
-        return DataFrame(dict_ans, c.columns)
+        return DataFrame(dict_ans, c.columns) 
     
     def order_by(self, this_key, ascending):
         c = self.copy()
@@ -108,3 +88,32 @@ class DataFrame():
                 dict_ans[c.columns[key_index]].append(person_list[key_index])
 
         return DataFrame(dict_ans, c.columns)
+    
+    @classmethod
+    def from_array(cls, arr, columns):
+        
+        dict_ans = {}        
+        for thing in columns:
+            dict_ans[thing] = []
+        
+        index = 0
+        for key, value in dict_ans.items():
+            value += [person[index] for person in arr]
+            index += 1
+        
+        return DataFrame(dict_ans, columns)
+    
+    @classmethod
+    def from_csv(cls, path_to_csv, header=True):
+        
+        with open(path_to_csv, "r") as file:
+            
+            file_str = file.read()
+            big_list = file_str.split("\n")
+
+            arrays = [string.split(",  ") for string in big_list]
+            arrays = arrays[1:len(arrays)]
+
+            columns = big_list[0].split(", ")
+            
+            return DataFrame.from_array(arrays, columns)

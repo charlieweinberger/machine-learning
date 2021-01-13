@@ -2,6 +2,7 @@ import sys
 sys.path.append('src')
 from dataframe import DataFrame
 
+"""
 print("Testing Assignment 29-2")
 
 data_dict = {
@@ -24,7 +25,7 @@ assert df1.to_array() == [
                            [1, 0, 4],
                            [0, 2, 0]
                          ], df1.to_array()
-
+                        
 df2 = df1.select_columns(['Sarah', 'Pete'])
 assert df2.to_array() == [
                            [3, 1],
@@ -80,3 +81,25 @@ ans = [['Sylvia', 'Mendez', 9],
 assert df.order_by('firstname', False).to_array() == ans, df.order_by('firstname', False).to_array()
 
 print("Passed Assignment 29-2")
+"""
+
+path_to_datasets = '/home/runner/machine-learning/datasets/'
+filename = 'airtravel.csv' 
+filepath = path_to_datasets + filename
+df = DataFrame.from_csv(filepath, header=True)
+
+assert df.columns == ['"Month"', '"1958"', '"1959"', '"1960"'], df.columns
+assert df.to_array() == [['"JAN"',  '340',  '360',  '417'],
+['"FEB"',  '318',  '342',  '391'],
+['"MAR"',  '362',  '406',  '419'],
+['"APR"',  '348',  '396',  '461'],
+['"MAY"',  '363',  '420',  '472'],
+['"JUN"',  '435',  '472',  '535'],
+['"JUL"',  '491',  '548',  '622'],
+['"AUG"',  '505',  '559',  '606'],
+['"SEP"',  '404',  '463',  '508'],
+['"OCT"',  '359',  '407',  '461'],
+['"NOV"',  '310',  '362',  '390'],
+['"DEC"',  '337',  '405',  '432']], df.to_array()
+
+print("passed")

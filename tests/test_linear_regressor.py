@@ -5,26 +5,32 @@ from dataframe import DataFrame
 from linear_regressor import LinearRegressor
 
 df = DataFrame.from_array(
-    [[0, 0, 0.1],
-     [1, 0, 0.2],
-     [0, 2, 0.5],
-     [4, 5, 0.6]],
-    columns = ['scoops of chocolate', 'scoops of vanilla', 'taste rating']
+    [[0, 0, 1], 
+     [1, 0, 2],
+     [2, 0, 4],
+     [4, 0, 8],
+     [6, 0, 9],
+     [0, 2, 2],
+     [0, 4, 5],
+     [0, 6, 7],
+     [0, 8, 6]],
+    columns = ['Slices of Roast Beef', 'Tablespoons of Peanut Butter', 'Rating']
 )
+regressor = LinearRegressor(df, dependent_variable = 'Rating')
 
-regressor = LinearRegressor(df, dependent_variable = 'taste rating')
+# part i
+print("part i:", regressor.coefficients)
 
-ans = {
-          'constant': 0.19252336,
-          'scoops of chocolate': -0.05981308,
-          'scoops of vanilla': 0.13271028
-      }
-assert {key:round(value, 8) for (key, value) in regressor.coefficients.items()} == ans, {key:round(value, 8) for (key, value) in regressor.coefficients.items()} # these coefficients are rounded, you should only round in your assert statement
-
-dict_problem = {
-                    'scoops of chocolate': 2,
-                    'scoops of vanilla': 3
+# part ii
+ii_dict = {
+                    'Slices of Roast Beef': 5,
+                    'Tablespoons of Peanut Butter': 0
                }
-assert round(regressor.predict(dict_problem), 8) == 0.47102804, round(regressor.predict(dict_problem), 8)
+print("part ii:", regressor.predict(ii_dict))
 
-print("passed all")
+# part iii
+iii_dict = {
+                    'Slices of Roast Beef': 5,
+                    'Tablespoons of Peanut Butter': 5
+               }
+print("part iii:", regressor.predict(iii_dict))
