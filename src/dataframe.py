@@ -12,6 +12,7 @@ class DataFrame():
     
     def copy(self):
         return DataFrame(self.data_dict, self.columns)
+    
     def to_array(self):
         c = self.copy()
 
@@ -22,6 +23,7 @@ class DataFrame():
                 ans[m][n] = c.column_values[n][m]
         
         return ans
+    
     def select_columns(self, name_list):
         c = self.copy()
 
@@ -32,6 +34,7 @@ class DataFrame():
                     dict_ans[name] = value
 
         return DataFrame(dict_ans, list(dict_ans.keys()))
+    
     def select_rows(self, row_indices):
         c = self.copy()
 
@@ -40,6 +43,7 @@ class DataFrame():
             dict_ans[key] = [value[index] for index in range(len(value)) if index in row_indices]
 
         return DataFrame(dict_ans, list(dict_ans.keys()))
+    
     def apply(self, name, f):
         c = self.copy()
 
@@ -59,6 +63,7 @@ class DataFrame():
         dict_ans = {c.columns[elem_index]:arr[elem_index] for elem_index in range(len(arr))}
 
         return dict_ans
+    
     def select_rows_where(self, f):
         c = self.copy()
 
@@ -88,7 +93,7 @@ class DataFrame():
                 dict_ans[c.columns[key_index]].append(person_list[key_index])
 
         return DataFrame(dict_ans, c.columns)
-    
+
     @classmethod
     def from_array(cls, arr, columns):
         
@@ -117,3 +122,17 @@ class DataFrame():
             columns = big_list[0].split(", ")
             
             return DataFrame.from_array(arrays, columns)
+    
+    def create_interaction_terms(self, name1, name2):
+        new_name = name1 + ' * ' + name2
+        self.columns.append(new_name)
+
+        name1_values = self.data_dict[name1]
+        name2_values = self.data_dict[name2]
+
+        self.data_dict[new_name] = []
+        for i in range(len(name1_values)):
+            interaction_term = name1_values[i] * name2_values[i]
+            self.data_dict[new_name].append(interaction_term)
+
+        return self
