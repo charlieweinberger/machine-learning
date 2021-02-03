@@ -136,3 +136,44 @@ class DataFrame():
             self.data_dict[new_name].append(interaction_term)
 
         return self
+    
+    def create_dummy_variables(self, column_name):
+        column_index = self.columns.index(column_name)
+        column_list = self.column_values[column_index]
+        
+        # only works if one of the elements in column_list has all the condiments.
+        condiment_keys_lengths = [len(elem) for elem in column_list]
+        for len_index in range(len(condiment_keys_lengths)):
+            if condiment_keys_lengths[len_index] == max(condiment_keys_lengths):
+                condiments = column_list[len_index]
+        
+        columns = self.columns
+        del columns[column_index]
+        for condiment in condiments[::-1]:
+            columns.insert(column_index, condiment)
+
+        numbers_list = []
+        for elem in column_list:
+            
+            to_add = [0 for _ in range(len(condiments))]
+            for condiment in elem:
+                
+                for n in range(len(condiments)):
+                    if condiment == condiments[n]:
+                        to_add[n] = 1
+
+            numbers_list.append(to_add)
+        
+        column_values = self.column_values
+        del column_values[column_index]
+        all_condiment_nums = [[thing[n] for thing in numbers_list] for n in range(column_index)]
+        for thing in all_condiment_nums[::-1]:
+            column_values.insert(column_index, thing)
+
+        data_dict = {}
+        for i in range(len(column_values)):
+            key = columns[i]
+            value = column_values[i]
+            data_dict[key] = value
+
+        return DataFrame(data_dict, columns)
