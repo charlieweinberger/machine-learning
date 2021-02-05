@@ -3,8 +3,6 @@ class DataFrame():
     def __init__(self, data_dict, column_order):
         self.data_dict = data_dict
         self.columns = column_order
-
-        self.column_keys = list(self.data_dict.keys())
         self.column_values = list(self.data_dict.values())
 
         self.num_rows = len(self.column_values)
@@ -123,17 +121,40 @@ class DataFrame():
             
             return DataFrame.from_array(arrays, columns)
     
-    def create_interaction_terms(self, name1, name2):
-        new_name = name1 + ' * ' + name2
-        self.columns.append(new_name)
+    def create_interaction_terms(self, dependent_variable):
+        
+        dependent_variable_index = self.columns.index(dependent_variable)
+        dependent_variable_value = self.data_dict[dependent_variable]
+        del self.data_dict[dependent_variable]
+        del self.columns[dependent_variable_index]
 
-        name1_values = self.data_dict[name1]
-        name2_values = self.data_dict[name2]
+        new_columns = []
+        for i in range(len(self.columns)):
+            for j in range(len(self.columns)):
+                if i < j:
+                    new_column = self.columns[i] + ' * ' + self.columns[j]
+                    new_columns.append(new_column)
+        self.columns += new_columns
+        
+        for i in range(len(self.columns)):
+            
+            key_string = self.columns[i]
+            key_list = key_string.split(' * ')
 
-        self.data_dict[new_name] = []
-        for i in range(len(name1_values)):
-            interaction_term = name1_values[i] * name2_values[i]
-            self.data_dict[new_name].append(interaction_term)
+            value_list = []
+            for j in range(len(self.column_values[0])):
+                value = 1
+                for key in key_list:
+                    value *= self.data_dict[key][j]
+                value_list.append(value)
+            
+            self.data_dict[key_string] = value_list
+
+        self.data_dict[dependent_variable] = dependent_variable_value
+        
+        self.column_values = list(self.data_dict.values())
+        self.num_rows = len(self.column_values)
+        self.num_cols = len(self.column_values[0])
 
         return self
     
@@ -146,7 +167,7 @@ class DataFrame():
         for len_index in range(len(condiment_keys_lengths)):
             if condiment_keys_lengths[len_index] == max(condiment_keys_lengths):
                 condiments = column_list[len_index]
-        
+
         columns = self.columns
         del columns[column_index]
         for condiment in condiments[::-1]:
