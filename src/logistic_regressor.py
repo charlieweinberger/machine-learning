@@ -1,8 +1,6 @@
 import math
 import sys
 sys.path.append('src')
-from matrix import Matrix
-from dataframe import DataFrame
 from linear_regressor import LinearRegressor
 
 def ln(x):

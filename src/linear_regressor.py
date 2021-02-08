@@ -53,40 +53,19 @@ class LinearRegressor():
         return coefficients_dict
   
     def predict(self, this_dict, zero_approximation=0):
-        
-        all_condiments = []
-        for elem in self.dataframe.columns:
-            total = list(this_dict.keys()) + all_condiments
-            if ' * ' not in elem:
-                if elem not in total:
-                    all_condiments.append(elem)
+
+        this_dict_keys = list(this_dict.keys())
+        non_interaction_dataframe_keys = [key for key in self.dataframe.columns if '*' not in key]
+
+        this_dict_v2 = {}
+        for dataframe_key in non_interaction_dataframe_keys:
+            if dataframe_key in this_dict_keys:
+                this_dict_v2[dataframe_key] = this_dict[dataframe_key]
             else:
-                elem_split = elem.split(' * ')
-                for mini_elem in elem_split:
-                    if mini_elem not in total:
-                        all_condiments.append(mini_elem)
-
-        this_dict_better = {}
-        for key, value in this_dict.items():
-            if type(value) in (int, float):
-                this_dict_better[key] = value
-            elif type(value) == list:
-                for elem in all_condiments:
-                    this_dict_better[elem] = zero_approximation
-                for elem in value:
-                    this_dict_better[elem] = 1
-
-        this_dict_better_keys = list(this_dict_better.keys())
+                this_dict_v2[dataframe_key] = 0
 
         coefficients_keys = list(self.coefficients.keys())
         coefficient_values = list(self.coefficients.values())
-
-        # print("\nthis_dict:", this_dict)
-        # print("this_dict_better:", this_dict_better)
-        # print("this_dict_better_keys:", this_dict_better_keys)
-
-        # print("\ncoefficients_keys:", coefficients_keys)
-        # print("\ncoefficient_values:", coefficient_values)
 
         ans = coefficient_values[0]
         for i in range(1, len(coefficient_values)):
@@ -94,12 +73,12 @@ class LinearRegressor():
             coefficient_value = coefficient_values[i]
             
             if ' * ' not in key:
-                this_dict_value = this_dict_better[key]
+                this_dict_value = this_dict_v2[key]
             else:
                 both_keys = key.split(' * ')
                 this_dict_value = 1
                 for one_key in both_keys:
-                    this_dict_value *= this_dict_better[one_key]
+                    this_dict_value *= this_dict_v2[one_key]
 
             ans += coefficient_value * this_dict_value
 
