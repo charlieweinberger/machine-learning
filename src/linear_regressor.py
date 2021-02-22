@@ -38,17 +38,17 @@ class LinearRegressor():
 
         dependent_variable_values = self.dataframe.data_dict[self.dependent_variable]
         right_side_no_matrix = [[num] for num in dependent_variable_values]
-        right_side = a_pseudoinverse.matrix_multiply(Matrix(right_side_no_matrix))
+        right_side = a_pseudoinverse.matrix_multiply(Matrix(right_side_no_matrix)).elements
  
         coefficients_list = ['constant']
         for key in self.dataframe.columns:
             if key != self.dependent_variable:
                 coefficients_list.append(key)
   
-        coefficients_dict = {'constant': right_side.elements[0][0]}
-        for i in range(len(right_side.elements)):
+        coefficients_dict = {'constant': right_side[0][0]}
+        for i in range(len(right_side)):
             key = coefficients_list[i]
-            coefficients_dict[key] = right_side.elements[i][0]
+            coefficients_dict[key] = right_side[i][0]
   
         return coefficients_dict
   
