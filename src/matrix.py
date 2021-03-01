@@ -16,7 +16,9 @@ class Matrix():
         for row_index in range(c.num_rows):
             ans.append([])
             for col_index in range(c.num_cols):
-                ans[row_index].append(c.elements[row_index][col_index] + matrix_to_add.elements[row_index][col_index]) 
+                c_elems = c.elements[row_index][col_index]
+                matrix_to_add_elems = matrix_to_add.elements[row_index][col_index]
+                ans[row_index].append(c_elems + matrix_to_add_elems) 
 
         return Matrix(ans)
 
@@ -27,7 +29,9 @@ class Matrix():
         for row_index in range(c.num_rows):
             ans.append([])
             for col_index in range(c.num_cols):
-                ans[row_index].append(c.elements[row_index][col_index] - matrix_to_subtract.elements[row_index][col_index]) 
+                c_elems = c.elements[row_index][col_index]
+                matrix_to_subtract_elems = matrix_to_subtract.elements[row_index][col_index]
+                ans[row_index].append(c_elems - matrix_to_subtract_elems)
 
         return Matrix(ans)
 
@@ -38,7 +42,9 @@ class Matrix():
         for row_index in range(c.num_rows):
             ans.append([])
             for col_index in range(c.num_cols):
-                ans[row_index].append(round(scalar * c.elements[row_index][col_index], 4)) 
+                c_elems = c.elements[row_index][col_index]
+                rounded = round(scalar * c_elems, 4)
+                ans[row_index].append(rounded) 
 
         return Matrix(ans)
 
