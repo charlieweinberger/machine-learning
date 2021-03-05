@@ -3,6 +3,23 @@ import math
 
 #  The 8-queens problem is a challenge to place 8 queens on a chess board in a way that none can attack each other. Remember that in chess, queens can attack any piece that is on the same row, column, or diagonal. So, the 8-queens problem is to place 8 queens on a chess board so that none of them are on the same row, column, or diagonal.
 
+"""
+
+Errors:
+
+1. (0, 2)
+2. (0, 4)
+3. (1, 6)
+4. (2, 4)
+5. (2, 7)
+6. (3, 4)
+7. (3, 5)
+8. (3, 7)
+9. (4, 7)
+10. (6, 7)
+
+"""
+
 def show_board(locations):
     board = [['.' for _ in range(8)] for _ in range(8)]
     
@@ -15,30 +32,16 @@ def show_board(locations):
         row_string = '  '.join(row_array)
         print(row_string)
 
-# cost = number of pairs of queens that are on the same row/column/diagonal
 def calc_cost(locations):
     cost = 0
-    pairs_calculated = []
-    
-    for pair1 in locations:
-        
-        locations_without_pair1 = [pair for pair in locations if pair != pair1]
-        for pair2 in locations_without_pair1:
-            
-            pairs = [pair1, pair2]
-            if pairs not in pairs_calculated and pairs[::-1] not in pairs_calculated:
-
-                row = same_row(pair1, pair2)
-                column = same_column(pair1, pair2)
-                diagonal = same_diagonal(pair1, pair2)
-
-                sames = [row, column, diagonal]
-                for boolean in sames:
-                    if boolean == True:
-                        cost += 1
-
-                pairs_calculated.append([pair1, pair2])
-
+    visited_errors = []
+    for pair1 in locations: 
+        for pair2 in locations:
+            pair_of_pairs = [pair1, pair2]
+            same_row_column_diagonal = same_row(pair1, pair2) or same_column(pair1, pair2) or same_diagonal(pair1, pair2)
+            if pair1 != pair2 and same_row_column_diagonal and pair_of_pairs not in visited_errors and pair_of_pairs[::-1] not in visited_errors:
+                cost += 1
+                visited_errors.append(pair_of_pairs)
     return cost
 
 def same_row(point1, point2):
@@ -48,11 +51,9 @@ def same_column(point1, point2):
     return point1[1] == point2[1]
 
 def same_diagonal(point1, point2):
-    if point2[0] - point1[0] != 0:
-        slope = (point2[1] - point1[1]) / (point2[0] - point1[0])
-        return slope in (-1, 1)
-    else:
-        return False
+    x_diff = point2[0] - point1[0]
+    y_diff = point2[1] - point1[1]
+    return abs(x_diff) == abs(y_diff)
 
 def random_optimizer(n):
     n_random_locations = []
@@ -88,7 +89,11 @@ print("\npart 2")
 assert calc_cost(locations) == 10, calc_cost(locations)
 print("calc_cost(locations) = 10")
 
+"""
+
 print("\npart 3")
 n_list = [10, 50, 100, 500, 1000]
 for n in n_list:
     print(random_optimizer(n))
+
+"""
