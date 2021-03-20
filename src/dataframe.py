@@ -98,16 +98,26 @@ class DataFrame():
         dict_ans = {}        
         for thing in columns:
             dict_ans[thing] = []
-        
+
         index = 0
         for key, value in dict_ans.items():
             value += [person[index] for person in arr]
             index += 1
-        
+
         return DataFrame(dict_ans, columns)
     
+    """
+    
+    In your DataFrame, update your method read_csv so that it accepts the following (optional) arguments:
+    - a line parser
+    - a dictionary of data types
+    
+    If you encounter any empty strings, then save those as None rather than the type given in the dictionary of data types.
+    
+    """
+
     @classmethod
-    def from_csv(cls, path_to_csv, header=True):
+    def from_csv(cls, path_to_csv, header=True, data_types=None, parser=None):
         
         with open(path_to_csv, "r") as file:
             
@@ -115,10 +125,33 @@ class DataFrame():
             big_list = file_str.split("\n")
 
             arrays = [string.split(",  ") for string in big_list]
-            arrays = arrays[1:len(arrays)]
+            arrays = [arrays[1:len(arrays)]][0]
+            arrays = [elem for elem in arrays if elem != ['']]
 
             columns = big_list[0].split(", ")
-            
+            if parser != None:
+                columns = parser(columns[0])
+
+            for i in range(len(arrays)):
+                arrays[i] = parser(arrays[i][0])
+
+            for i in range(len(arrays)):
+
+                new_arr = []
+                for j in range(len(arrays[i])):
+
+                    data_type = list(data_types.values())[j]
+                    old_value = arrays[i][j]
+                    
+                    if old_value == '':
+                        new_value = None
+                    else:
+                        new_value = data_type(old_value)
+
+                    new_arr.append(new_value)
+                
+                arrays[i] = new_arr
+
             return DataFrame.from_array(arrays, columns)
     
     def create_interaction_terms(self, dependent_variable):
