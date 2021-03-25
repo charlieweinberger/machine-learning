@@ -105,16 +105,6 @@ class DataFrame():
             index += 1
 
         return DataFrame(dict_ans, columns)
-    
-    """
-    
-    In your DataFrame, update your method read_csv so that it accepts the following (optional) arguments:
-    - a line parser
-    - a dictionary of data types
-    
-    If you encounter any empty strings, then save those as None rather than the type given in the dictionary of data types.
-    
-    """
 
     @classmethod
     def from_csv(cls, path_to_csv, header=True, data_types=None, parser=None):
