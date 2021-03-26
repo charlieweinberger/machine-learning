@@ -1,8 +1,8 @@
 class DataFrame():
     
-    def __init__(self, data_dict, column_order):
+    def __init__(self, data_dict, columns):
         self.data_dict = data_dict
-        self.columns = column_order
+        self.columns = columns
         self.column_values = list(self.data_dict.values())
 
         self.num_rows = len(self.column_values)
@@ -22,7 +22,7 @@ class DataFrame():
         
         return ans
     
-    def select_columns(self, name_list):
+    def select(self, name_list):
         c = self.copy()
 
         dict_ans = {}
@@ -62,7 +62,7 @@ class DataFrame():
 
         return dict_ans
     
-    def select_rows_where(self, f):
+    def where(self, f):
         c = self.copy()
 
         dict_ans = {c.columns[index]:[] for index in range(len(c.columns))}
@@ -76,7 +76,7 @@ class DataFrame():
         
         return DataFrame(dict_ans, c.columns) 
     
-    def order_by(self, this_key, ascending):
+    def order_by(self, this_key, ascending=True):
         c = self.copy()
 
         people_dict_list = [c.convert_row_from_array_to_dict(person) for person in c.to_array()]
@@ -91,6 +91,72 @@ class DataFrame():
                 dict_ans[c.columns[key_index]].append(person_list[key_index])
 
         return DataFrame(dict_ans, c.columns)
+
+    def group_by(self, this_key):
+        c = self.copy()
+
+        key_list = c.data_dict[this_key]
+        
+        non_repeating_key_list = []
+        for key in key_list:
+            if key not in non_repeating_key_list:
+                non_repeating_key_list.append(key)
+        
+        part_ans = [[[] for _ in non_repeating_key_list] for key in c.data_dict if key != this_key]
+
+        for elem1 in non_repeating_key_list:
+            for i in range(len(key_list)):
+                
+                if elem1 == key_list[i]:
+                    
+                    for key in c.data_dict:
+                        
+                        if key != this_key:
+                                
+                            value_list = c.data_dict[key]
+                            value = value_list[i]
+
+                             # only works when this_key is the first key in c.columns
+                            j = c.columns.index(key) - 1
+                            k = non_repeating_key_list.index(key_list[i])
+                            part_ans[j][k].append(value)
+
+        # only works when this_key is the first key in c.columns
+        data_dict = {}
+        for i in range(len(c.columns)):
+            
+            current_key = c.columns[i]
+
+            if current_key == this_key:
+                data_dict[current_key] = non_repeating_key_list
+            else:
+                data_dict[current_key] = part_ans[i - 1]
+
+        ans_list = [[data_dict[key][i] for key in c.columns] for i in range(len(non_repeating_key_list))]
+
+        return DataFrame.from_array(ans_list, c.columns)
+
+    def aggregate(self, colname, how):
+        c = self.copy()
+
+        for i in range(len(c.data_dict[colname])):
+
+            if how == 'count':
+                c.data_dict[colname][i] = len(c.data_dict[colname][i])
+            
+            elif how == 'max':
+                c.data_dict[colname][i] = max(c.data_dict[colname][i])
+            
+            elif how == 'min':
+                c.data_dict[colname][i] = min(c.data_dict[colname][i])
+            
+            elif how == 'sum':
+                c.data_dict[colname][i] = sum(c.data_dict[colname][i])
+            
+            elif how == 'avg':
+                c.data_dict[colname][i] = sum(c.data_dict[colname][i]) / len(c.data_dict[colname][i])
+
+        return c
 
     @classmethod
     def from_array(cls, arr, columns):

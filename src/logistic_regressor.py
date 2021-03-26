@@ -1,8 +1,6 @@
 import math
-import sys
-sys.path.append('src')
-from linear_regressor import LinearRegressor
- 
+from linear_regressor import *
+
 class LogisticRegressor():
 
     def __init__(self, dataframe, dependent_variable, upper_bound):
@@ -25,15 +23,5 @@ class LogisticRegressor():
     def predict(self, this_dict):
 
         linear_regressor = LinearRegressor(self.dataframe, dependent_variable = self.dependent_variable)
-
-        new_dict = {}
-        for key, value in this_dict.items():
-            if value != 0:
-                new_dict[key] = value
-            else:
-                new_dict[key] = 0.1
-
         linear_prediction = linear_regressor.predict(this_dict, zero_approximation = 0)
-        logistic_prediction = self.upper_bound / (1 + (math.e ** linear_prediction))
-
-        return logistic_prediction
+        return self.upper_bound / (1 + (math.e ** linear_prediction))
