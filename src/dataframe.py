@@ -61,16 +61,55 @@ class DataFrame():
         dict_ans = {c.columns[elem_index]:arr[elem_index] for elem_index in range(len(arr))}
 
         return dict_ans
-    
+
     def query(self, string):
-        c = self.copy()
         
         string = string.replace(',', '').split(' ')
+        better_string = []
+        for elem in string:
+            if elem not in ['ORDER', 'BY']:
+                better_string.append(elem)
+            elif elem == 'ORDER':
+                better_string.append('ORDER BY')
+                continue
+                
+        operations = [elem for elem in better_string if elem in ['SELECT', 'ORDER BY']]
 
-        if string[0] == "SELECT":
+        operations_and_column_names = []
+        new_list = [operations[0]]
+
+        for elem in better_string[1:]:
             
-            new_dict = {column_name:c.data_dict[column_name] for column_name in string[1:]}
-            return DataFrame(new_dict, string[1:])
+            if elem in operations:
+                operations_and_column_names.append(new_list)
+                new_list = [elem]
+            else:
+                new_list.append(elem)
+        
+        operations_and_column_names.append(new_list)
+        
+        better_operations_and_column_names = [] 
+        for arr in operations_and_column_names:
+            
+            if arr[0] == 'ORDER BY':
+                new_arr = ['ORDER BY']
+
+                for j in range(len(arr[1:]) // 2):
+                    new_elem = [arr[1:][2*j], arr[1:][2*j + 1]]
+                    new_arr.append(new_elem)
+            
+                better_operations_and_column_names.append(new_arr)
+            
+            else:
+                better_operations_and_column_names.append(arr)
+
+        for pair in better_operations_and_column_names[1][1:][::-1]: 
+            self = self.order_by(pair[0], pair[1] == 'ASC')
+
+        self = self.select(better_operations_and_column_names[0][1:])
+        self.columns = list(self.data_dict)
+
+        return self
 
     def where(self, f):
         c = self.copy()
