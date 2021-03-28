@@ -62,6 +62,16 @@ class DataFrame():
 
         return dict_ans
     
+    def query(self, string):
+        c = self.copy()
+        
+        string = string.replace(',', '').split(' ')
+
+        if string[0] == "SELECT":
+            
+            new_dict = {column_name:c.data_dict[column_name] for column_name in string[1:]}
+            return DataFrame(new_dict, string[1:])
+
     def where(self, f):
         c = self.copy()
 
@@ -135,7 +145,7 @@ class DataFrame():
         ans_list = [[data_dict[key][i] for key in c.columns] for i in range(len(non_repeating_key_list))]
 
         return DataFrame.from_array(ans_list, c.columns)
-
+    
     def aggregate(self, colname, how):
         c = self.copy()
 
