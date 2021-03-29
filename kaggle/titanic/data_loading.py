@@ -1,4 +1,5 @@
-from parse_line import parse_line 
+from parse_line import parse_line
+import math
 import sys
 sys.path.append('src')
 from dataframe import DataFrame
@@ -109,4 +110,32 @@ ans2 = [
 
 assert df.to_array()[:5] == ans2
 
-print("\npassed all")
+# Assignment 73 - processing and interpreting Ages data and Fare data
+
+ages = []
+max_age = max(df.where(lambda row: row['Age'] != None).data_dict['Age'])
+for i in [10*i for i in range(math.ceil(max_age) // 10)]:
+    this_age_range = df.where(lambda row: row['Age'] != None).where(lambda row: i < row['Age'] <= (i + 10))
+    ages.append(this_age_range)
+
+for age_range in ages:
+    age_range_survived = [elem[0] for elem in age_range.select(["Survived"]).to_array()]
+    survival_rate = sum(age_range_survived) / len(age_range_survived)
+    
+    # print('\nsurvival_rate:', round(survival_rate, 2))
+    # print('count:', len(age_range_survived))
+
+# python kaggle/titanic/data_loading.py
+
+fares = []
+fare_ranges_mins = [0, 5, 10, 20, 50, 100, 200, 99999999999999999999999999999999999999999]
+for i in range(len(fare_ranges_mins)):
+    this_fare_range = df.where(lambda row: row['Fare'] != None).where(lambda row: fare_ranges_mins[i] < row['Fare'] <= fare_ranges_mins[i + 1])
+    fares.append(this_fare_range)
+
+for fare_range in fares:
+    fare_range_survived = [elem[0] for elem in fare_range.select(["Survived"]).to_array()]
+    avg = sum(fare_range_survived) / len(fare_range_survived)
+    
+    # print('\naverage:', round(avg, 2))
+    # print('count:', len(fare_range_survived))
