@@ -163,21 +163,12 @@ class Matrix():
         return c
     
     def get_rows(self, row_nums):
-        c = self.copy()
-        ans = [[c.elements[row_index] for row_index in range(c.num_rows) if row_num == row_index][0] for row_num in row_nums]
+        ans = [self.elements[row_index] for row_index in row_nums]
         return Matrix(ans)
     
     def get_columns(self, col_nums):
-        c = self.copy()
-        final_ans = []
-        for row_index in range(c.num_rows):
-            ans_set = []
-            for num_index in range(c.num_cols):
-                for col_num in col_nums:
-                    if col_num == num_index:
-                        ans_set.append(c.elements[row_index][num_index])
-            final_ans.append(ans_set)
-        return Matrix(final_ans)
+        ans = [[self.elements[row_index][col_index] for col_index in col_nums] for row_index in range(self.num_rows)]
+        return Matrix(ans)
     
     def augment(self, other_matrix):
         c = self.copy()
@@ -266,34 +257,40 @@ class Matrix():
             return 0
         else:
             return determinant
-    
-    def big_to_small_matrix(self, bad_row_index, bad_col_index):
-        c = self.copy()
 
-        small = []
-        for row_index in range(c.num_rows):
-            row = []
-            for col_index in range(c.num_cols):
-                if row_index != bad_row_index and col_index != bad_col_index:
-                    row.append(c.elements[row_index][col_index])
-            small.append(row)
+    def calc_minor(self, row_index, col_index):
+        minor = self.copy()
         
-        ans = [row for row in small if len(row) != 0]
-
-        return Matrix(ans)
+        row_nums = [index for index in range(minor.num_rows) if index != row_index]
+        col_nums = [index for index in range(minor.num_cols) if index != col_index]
+        
+        minor = minor.get_rows(row_nums)
+        minor = minor.get_columns(col_nums)
+        
+        return minor
 
     def cofactor_method_determinant(self):
-        c = self.copy()
         
-        if c.num_rows != c.num_cols:
+        if self.num_rows != self.num_cols:
             return "Error: cannot take cofactor_method_determinant of a non-square matrix"
-
-        if c.num_rows == 2:
-            return (c.elements[0][0] * c.elements[1][1]) - (c.elements[0][1] * c.elements[1][0])
+        
+        elif self.num_rows == 1:
+            return self.elements[0][0]
+        
+        elif self.num_rows == 2:
+            return (self.elements[0][0] * self.elements[1][1]) - (self.elements[0][1] * self.elements[1][0])
+        
         else:
+            
             ans = 0
-            for col_index in range(c.num_cols):
-                ans += (-1 ** col_index) * c.elements[0][col_index] * c.big_to_small_matrix(0, col_index).cofactor_method_determinant()
+            for col_index in range(self.num_cols):
+                
+                coefficient_sign = (-1 ** col_index)
+                coefficient = self.elements[0][col_index]
+                minor = self.calc_minor(0, col_index)
+                
+                ans += coefficient_sign * coefficient * minor.cofactor_method_determinant()
+            
             return ans
     
     def exponent(self, num):

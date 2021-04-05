@@ -1,10 +1,9 @@
-from random import random
-
+import random
 import sys
 sys.path.append('src')
 from matrix import Matrix
 
-test_matrix_elements = [[round(40 * (random() - 0.5), 3) for i in range(10)] for j in range(10)]
+test_matrix_elements = [[randint(-20, 20) for _ in range(10)] for _ in range(10)]
 test_matrix = Matrix(test_matrix_elements)
 
 print(test_matrix.elements)
