@@ -22,6 +22,7 @@ class LogisticRegressor():
         data_dict = {key:value.copy() for key, value in self.df.data_dict.items()}
         data_dict[self.dv] = [math.log((self.upper_bound / elem) - 1) for elem in data_dict[self.dv]]
         
+        
         new_df = DataFrame(data_dict, self.df.columns)
         linear_regressor = LinearRegressor(new_df, self.dv)
         return linear_regressor.coefficients
