@@ -34,20 +34,16 @@ assert df.to_array()[:5] == ans1
 
 # Name -> Surname
 
-def name_to_surname(name): return name.split(',')[0][1:]
-
 df.data_dict['Surname'] = df.data_dict['Name']
-df = df.apply('Surname', lambda x: name_to_surname(x))
+df = df.apply('Surname', lambda x: x.split(',')[0][1:])
 del df.data_dict['Name']
 
 new_columns = ["PassengerId", "Survived", "Pclass", "Surname", "Sex", "Age", "SibSp", "Parch", "Ticket", "Fare", "Cabin", "Embarked"]
 
 df.columns = new_columns
-df.data_dict = {key : df.data_dict[key] for key in df.columns}
+df.data_dict = {key:df.data_dict[key] for key in df.columns}
 
 # Cabin -> CabinType, CabinNumber
-
-def cabin_to_cabin_type(cabin): return None if cabin == None else cabin[0]
 
 def cabin_to_cabin_number(cabin):
     
@@ -62,14 +58,14 @@ def cabin_to_cabin_number(cabin):
 
 df.data_dict['CabinType'] = df.data_dict['Cabin']
 df.data_dict['CabinNumber'] = df.data_dict['Cabin']
-df = df.apply('CabinType', lambda x: cabin_to_cabin_type(x))
+df = df.apply('CabinType', lambda x: None if x == None else x[0])
 df = df.apply('CabinNumber', lambda x: cabin_to_cabin_number(x))
 del df.data_dict['Cabin']
 
 new_columns = ["PassengerId", "Survived", "Pclass", "Surname", "Sex", "Age", "SibSp", "Parch", "Ticket", "Fare", "CabinType", "CabinNumber", "Embarked"]
 
 df.columns = new_columns
-df.data_dict = {key : df.data_dict[key] for key in df.columns}
+df.data_dict = {key:df.data_dict[key] for key in df.columns}
 
 # Ticket -> TicketType, TicketNumber
 
@@ -94,7 +90,7 @@ del df.data_dict['Ticket']
 new_columns = ["PassengerId", "Survived", "Pclass", "Surname", "Sex", "Age", "SibSp", "Parch", "TicketType", "TicketNumber", "Fare", "CabinType", "CabinNumber", "Embarked"]
 
 df.columns = new_columns
-df.data_dict = {key : df.data_dict[key] for key in df.columns}
+df.data_dict = {key:df.data_dict[key] for key in df.columns}
 
 # tests
 

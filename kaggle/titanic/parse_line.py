@@ -18,6 +18,7 @@ def parse_line(line):
             quote_symbol = char
 
     entries.append(entry_str)
+    
     return entries
 
 """

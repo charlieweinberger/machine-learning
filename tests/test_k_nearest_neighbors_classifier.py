@@ -3,6 +3,43 @@ from sklearn.neighbors import KNeighborsClassifier
 import matplotlib.pyplot as plt
 plt.style.use('bmh')
 
+def df_to_list(df):
+    return df.to_numpy().tolist()
+
+def row_prediction_is_correct(knn, i):
+
+    x_df = df[[col for col in df.columns if col != 'Cookie Type']]
+    y_df = df['Cookie Type']
+
+    df_to_row = lambda a: df_to_list(a.iloc[[i]])[0]
+    current_values =         df_to_row(x_df)
+    current_classification = df_to_row(y_df)
+    
+    df_to_dataset = lambda a: df_to_list(a.drop([i]).reset_index(drop=True))
+    train = df_to_dataset(x_df)
+    test =  df_to_dataset(y_df)
+
+    other_knn = knn.fit(train, test)
+    other_classification = other_knn.predict([current_values])
+
+    return current_classification == other_classification
+
+def knn_accuracies(df, k_values):
+
+    accuracies = []
+
+    for k in k_values:
+        
+        knn = KNeighborsClassifier(n_neighbors = k)
+        
+        num_total = len(df_to_list(df))
+        num_correct = [row_prediction_is_correct(knn, i) for i in range(num_total)]
+        
+        accuracy = sum(num_correct) / num_total
+        accuracies.append(accuracy)
+    
+    return accuracies
+
 df = pd.DataFrame(
     [['Shortbread', 0.14, 0.14, 0.28, 0.44],
      ['Shortbread', 0.10, 0.18, 0.28, 0.44],
@@ -26,39 +63,8 @@ df = pd.DataFrame(
      columns = ['Cookie Type', 'Portion Eggs', 'Portion Butter', 'Portion Sugar', 'Portion Flour']
     )
 
-accuracies = []
 k_values = range(1, 19)
-
-def df_to_list(df):
-    return df.to_numpy().tolist()
-
-def row_prediction_is_correct(knn, i):
-
-    x_df = df[[col for col in df.columns if col != 'Cookie Type']]
-    y_df = df['Cookie Type']
-
-    df_to_row = lambda a: df_to_list(a.iloc[[i]])[0]
-    current_values =         df_to_row(x_df)
-    current_classification = df_to_row(y_df)
-    
-    df_to_dataset = lambda a: df_to_list(a.drop([i]).reset_index(drop=True))
-    train = df_to_dataset(x_df)
-    test =  df_to_dataset(y_df)
-
-    other_knn = knn.fit(train, test)
-    other_classification = other_knn.predict([current_values])
-
-    return current_classification == other_classification
-
-for k in k_values:
-    
-    knn = KNeighborsClassifier(n_neighbors = k)
-    
-    num_total = len(df_to_list(df))
-    num_correct = ['' for i in range(num_total) if row_prediction_is_correct(knn, i)]
-    
-    accuracy = len(num_correct) / num_total
-    accuracies.append(accuracy)
+accuracies = knn_accuracies(df, k_values)
 
 plt.plot(k_values, accuracies)
 plt.xlabel('k')
