@@ -40,7 +40,7 @@ def knn_accuracies(df, k_values, dv):
     
     return accuracies
 
-df = pd.read_csv("kaggle/data/processes_dataset.csv")
+df = pd.read_csv("kaggle/data/processed_dataset.csv")
 features_to_keep = ["Survived", "Sex", "Pclass", "Fare", "Age", "SibSp"]
 df = df[:100][features_to_keep]
 
