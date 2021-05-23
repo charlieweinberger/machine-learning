@@ -1,8 +1,10 @@
-import sys
-sys.path.append('src')
-from elbow_method import *
+import matplotlib.pyplot as plt
+plt.style.use('bmh')
+import numpy as np
+from sklearn.cluster import KMeans
 
-data = [[0.14, 0.14, 0.28, 0.44],
+data = np.array(
+       [[0.14, 0.14, 0.28, 0.44],
         [0.22, 0.1,  0.45, 0.33],
         [0.1,  0.19, 0.25, 0.4 ],
         [0.02, 0.08, 0.43, 0.45],
@@ -21,7 +23,12 @@ data = [[0.14, 0.14, 0.28, 0.44],
         [0.0,  0.13, 0.4,  0.49],
         [0.22, 0.07, 0.4,  0.38],
         [0.2,  0.18, 0.3,  0.4 ]]
+    )
 
 k_list = [1, 2, 3, 4, 5]
-elbow_method = ElbowMethod(data, k_list)
-elbow_method.run()
+sum_squared_error_list = [KMeans(n_clusters=k).fit(data).inertia_ for k in k_list]
+
+plt.plot(k_list, sum_squared_error_list)
+plt.xlabel('k')
+plt.ylabel('sum squared error')
+plt.savefig('sklearn_sum_squared_error_vs_k.png')
