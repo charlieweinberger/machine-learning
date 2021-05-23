@@ -6,6 +6,7 @@ columns = ['Portion Eggs',
             'Portion Butter',
             'Portion Sugar',
             'Portion Flour']
+
 classes = ['Shortbread',
             'Fortune',
             'Shortbread',
@@ -37,7 +38,6 @@ classes = ['Shortbread',
    - Compute the new cluster centers by taking the mean of the records in each cluster.
 
 3. Keep repeating step 2 until the clusters don't change after the update.
-
 
 """
 
@@ -82,11 +82,7 @@ print("passed")
 
 # Step-by-step instructions:
 
-initial_clusters = {
-    1: [0,3,6,9,12,15,18],
-    2: [1,4,7,10,13,16],
-    3: [2,5,8,11,14,17]
-}
+initial_clusters = {1: [0, 3, 6, 9, 12, 15, 18], 2: [1, 4, 7, 10, 13, 16], 3: [2, 5, 8, 11, 14, 17]}
 
 kmeans = KMeans(initial_clusters, data)
 
