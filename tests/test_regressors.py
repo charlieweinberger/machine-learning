@@ -16,6 +16,10 @@ arr = [
 ]
 df = DataFrame.from_array(arr, columns = ['x', 'y'])
 
+'''
+python tests/test_regressors.py
+'''
+
 reg = LogisticRegressor(df, dependent_variable='y', upper_bound=1)
 reg.set_coefficients({'constant': 0.5, 'x': 0.5})
 

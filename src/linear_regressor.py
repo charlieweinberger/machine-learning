@@ -10,7 +10,7 @@ class LinearRegressor():
         self.dv = dependent_variable
         self.independent_variables = [elem for elem in self.df.columns if elem != self.dv]
         self.coefficients = self.calculate_coefficients()
-      
+    
     def calculate_coefficients(self):
   
         data_dict = self.df.data_dict
