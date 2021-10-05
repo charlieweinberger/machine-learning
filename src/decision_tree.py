@@ -41,18 +41,14 @@ class Node:
         self.splits = self.set_splits()
     
     def set_splits(self):
-
         splits = []
-
         for key in self.points[0].keys():
             if key != 'class':
-
                 values = list(set([point[key] for point in self.points]))
                 for i in range(len(values) - 1):
                     midpoint = (values[i] + values[i + 1]) / 2
                     split = Split(key, self.points, midpoint)
                     splits.append(split)
-        
         return splits
 
     def find_best_split(self):
@@ -64,13 +60,12 @@ class Node:
         return calc_entropy(self.points) == 0 or len(self.points) < min_size_to_split or all_the_same
 
 class DecisionTree:
-    def __init__(self, min_size_to_split=1):
-        self.root = None
+    def __init__(self, points, min_size_to_split=1):
+        self.root = Node(points)
         self.min_size_to_split = min_size_to_split
         
-    def fit(self, points):
+    def fit(self):
 
-        self.root = Node(points)
         current_node = self.root
         nodes_to_do = [current_node]
 
