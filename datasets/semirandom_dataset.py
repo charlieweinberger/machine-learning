@@ -9,10 +9,10 @@ def get_dist(power, farthest):
     weights = [x / sum(weights) for x in weights]
     return random.choices(population, weights)[0]
 
-def semirandom_dataset(centers, classes, colors, farthest, total_num_points, power, show):
+def semirandom_dataset(centers, classes, colors, farthest, power, total_num_points, show=False):
 
     num_sets = len(centers)
-    points = [[] for _ in range(num_sets)]
+    points = {'x': [], 'o': []}
 
     for i in range(num_sets):
         
@@ -25,22 +25,14 @@ def semirandom_dataset(centers, classes, colors, farthest, total_num_points, pow
             x = center[0] + d * math.cos(theta)
             y = center[1] + d * math.sin(theta)
 
-            point = {'x': x, 'y': y, 'class': classes[i]}
-            points[i].append(point)
-
-        if show:
-
-            x_points = [point['x'] for point in points[i]]
-            y_points = [point['y'] for point in points[i]]
-
-            print('\ncenter:    ', center)
-            print('est_center:', (round(sum(x_points) / len(x_points), 3), round(sum(y_points) / len(y_points), 3)))
-
-            plt.scatter(x_points, y_points, c=colors[i])
+            points[classes[i]].append((x, y))
 
     if show:
-        plt.savefig('images/semirandom_dataset.png')
-    
-    return [point for center_points in points for point in center_points]
 
-# python datasets/semirandom_dataset.py
+        for key, value in points.items():
+            for point in value:
+                plt.plot(point[0], point[1], color=colors[key], marker=key)
+
+        plt.savefig('images/semirandom_dataset.png')
+
+    return points
