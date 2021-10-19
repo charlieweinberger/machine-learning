@@ -26,7 +26,7 @@ class RandomForest():
         
         if self.is_random: return self.point_dict
 
-        all_points = [(key, point) for key, value in self.set_point_dict(point_dict).items() for point in value]
+        all_points = [(key, point) for key, value in self.point_dict.items() for point in value]
         used_points = []
 
         subset = {'x': [], 'o': []}

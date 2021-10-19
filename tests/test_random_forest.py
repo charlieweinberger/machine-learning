@@ -40,7 +40,8 @@ num_points = 200
 points = semirandom_dataset(centers, classes, colors, farthest, power, num_points)
 
 folds = get_folds_list(points, 5)
-num_trees_list = [1, 10, 20, 50, 100, 200, 500]
+# num_trees_list = [1, 5, 10]
+num_trees_list = [1, 10, 20, 50, 100, 200]
 min_size_to_split = 10
 
 import time
@@ -55,7 +56,7 @@ for num_trees in num_trees_list:
     accuracy = 0
     for leave_one_out_fold in folds:
         point_dict = get_point_dict(folds, leave_one_out_fold)
-        forest = RandomForest(num_trees, point_dict, min_size_to_split, random=False, p=0.8)
+        forest = RandomForest(num_trees, point_dict, min_size_to_split, False, p=0.8)
         forest.set_trees()
         accuracy += correct_classification(forest, leave_one_out_fold)
     
@@ -64,7 +65,10 @@ for num_trees in num_trees_list:
     t = time.time() - starting_time
     print("time:", f'{t} seconds' if t < 60 else f'{t/60} minutes')
 
+# wednesday's graph took 38 mintues (about 10 minutes per 100 trees)
+# weekend     graph took 49 minutes 
+
 plt.plot(num_trees_list, accuracy_list, color='black', marker='o')
 plt.xlabel('# of Decision Trees in RF')
 plt.ylabel('5-fold cross-validation accuracy')
-plt.savefig('images/random_forest.png')
+plt.savefig('images/random_forest_with_p.png')
