@@ -47,3 +47,5 @@ class ElbowMethod():
         plt.xlabel('k')
         plt.ylabel('sum squared error')
         plt.savefig('sum_squared_error_vs_k.png')
+
+# test
