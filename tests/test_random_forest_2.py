@@ -58,13 +58,13 @@ farthest = 4
 power = 1.5
 num_points = 200
 
-dataset_points = semirandom_dataset(centers, classes, colors, farthest, power, num_points)
+dataset_points_dict = semirandom_dataset(centers, classes, colors, farthest, power, num_points)
 
 num_folds = 2
 num_trees = 100
 min_size_to_split = 2 
 
-training, testing = get_folds_list(dataset_points, num_folds)
+training, testing = get_folds_list(dataset_points_dict, num_folds)
 forest = RandomForestClassifier(n_estimators=num_trees)
 
 x_and_y = [(elem, key) for key, value in training.items() for elem in value]
@@ -72,13 +72,14 @@ x = [list(elem[0]) for elem in x_and_y]
 y = [elem[1] for elem in x_and_y]
 forest.fit(x, y)
 
-many_points = [[random.uniform(-6, 6), random.uniform(-6, 6)] for _ in range(2500)]
+many_points = [[x/10, y/10] for x in range(-60, 60) for y in range(-60, 60)]
+dataset_points = dataset_points_dict['x'] + dataset_points_dict['o']
 
 for point in many_points:
     prediction = forest.predict([point])[0]
-    plt.scatter(point[0], point[1], s=7, c=colors[prediction], alpha=0.5)
+    plt.scatter(point[0], point[1], s=2, c=colors[prediction], alpha=0.5)
 
-for point in dataset_points['x'] + dataset_points['o']:
+for point in dataset_points:
     prediction = forest.predict([point])[0]
     plt.scatter(point[0], point[1], s=50, c=colors[prediction])
 
