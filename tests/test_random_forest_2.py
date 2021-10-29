@@ -72,7 +72,7 @@ x = [list(elem[0]) for elem in x_and_y]
 y = [elem[1] for elem in x_and_y]
 forest.fit(x, y)
 
-many_points = [[x/10, y/10] for x in range(-60, 60) for y in range(-60, 60)]
+many_points = [[x/20, y/20] for x in range(-120, 120) for y in range(-120, 120)]
 dataset_points = dataset_points_dict['x'] + dataset_points_dict['o']
 
 for point in many_points:
@@ -83,6 +83,6 @@ for point in dataset_points:
     prediction = forest.predict([point])[0]
     plt.scatter(point[0], point[1], s=50, c=colors[prediction])
 
-plt.savefig('sklearn_random_forest_2.png')
+plt.savefig('sklearn_random_forest_2_too_many_points.png')
 
 print('done')
